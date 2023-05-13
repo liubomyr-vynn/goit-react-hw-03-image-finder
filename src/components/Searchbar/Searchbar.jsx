@@ -8,8 +8,7 @@ class Searchbar extends Component {
   };
 
   handleInput = event => {
-    this.setState({ inputValue: event.target.value.toLowerCase().trim() });
-    // console.log(this.state);
+    this.setState({ inputValue: event.target.value });
   };
 
   handleSubmit = event => {
@@ -33,6 +32,8 @@ class Searchbar extends Component {
             value={inputValue}
             type="text"
             placeholder="Search images"
+            autoComplete="off"
+            autoFocus
             name="search"
             className="SearchForm-input"
             id="id-1"

@@ -1,5 +1,7 @@
 @import-normalize; /* bring in normalize.css styles */
 @import './components/Searchbar/Searchbar.module.css';
+@import './components/ImageGallery/ImageGallery.module.css';
+@import './components/ImageGalleryItem/ImageGalleryItem.module.css';
 
 html {
   box-sizing: border-box;

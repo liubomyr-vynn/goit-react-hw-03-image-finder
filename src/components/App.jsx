@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
-// import ImageGallery from './ImageGallery/ImageGallery';
+import ImageGallery from './ImageGallery/ImageGallery';
 
 class App extends Component {
   state = {
@@ -8,7 +8,6 @@ class App extends Component {
   };
 
   handleFormSubmit = inputValue => {
-    console.log(inputValue);
     this.setState({ inputValue });
   };
 
@@ -16,7 +15,7 @@ class App extends Component {
     return (
       <div>
         <Searchbar onFormSubmit={this.handleFormSubmit} />
-        {/* <ImageGallery inputValue={this.state.inputValue} /> */}
+        <ImageGallery inputValue={this.state.inputValue} />
       </div>
     );
   }

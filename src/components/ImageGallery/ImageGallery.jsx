@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import Button from '../Button/Button';
 import imagesApi from '../../Services/Gallery-api';
 
 class ImageGallery extends Component {
   state = {
-    searchQuery: null,
+    searchQuery: '',
+    currentPage: 1,
   };
 
   componentDidUpdate(prevProps) {
@@ -14,17 +16,22 @@ class ImageGallery extends Component {
     if (prevInput !== nextInput) {
       imagesApi
         .fetchImages(nextInput)
-        .then(searchQuery => this.setState({ searchQuery }));
+        .then(searchQuery => this.setState({ searchQuery }))
+        .catch(error => console.log(error));
     }
-    console.log(this.state.searchQuery);
   }
+
+  handleLoadMore = () => {
+    this.setState({ currentPage: this.state.currentPage + 1 });
+    console.log(this.state.currentPage);
+  };
 
   render() {
     const { searchQuery } = this.state;
     return (
       <div>
         <ul className="ImageGallery">
-          {searchQuery !== null &&
+          {searchQuery !== '' &&
             searchQuery.hits.map(image => (
               <ImageGalleryItem
                 largeImage={image.largeImageURL}
@@ -32,12 +39,10 @@ class ImageGallery extends Component {
               />
             ))}
         </ul>
+        {searchQuery !== '' && <Button onClick={this.handleLoadMore} />}
       </div>
     );
   }
 }
 
 export default ImageGallery;
-// {
-//   image.previewURL;
-// }

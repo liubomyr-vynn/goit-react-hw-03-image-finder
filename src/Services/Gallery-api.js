@@ -1,10 +1,19 @@
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '34845172-53e67b2f5b8cb8ccf3124ff1b';
 
-const fetchImages = query => {
+const fetchImages = (query, page = 1) => {
   return fetch(
-    `${BASE_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true`
-  ).then(res => res.json());
+    `${BASE_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12
+
+`
+  ).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    return Promise.reject(
+      new Error(`Oops... there are no ${query} images matching your search... `)
+    );
+  });
 };
 
 const api = {

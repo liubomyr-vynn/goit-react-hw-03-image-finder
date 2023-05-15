@@ -89,9 +89,6 @@ class ImageGallery extends Component {
         {searchQuery !== '' && images.length > 0 && (
           <Button onChange={this.handleLoadMore} />
         )}
-        {searchQuery !== '' && images.length === 0 && (
-          <p>No photos found for this query</p>
-        )}
       </div>
     );
   }

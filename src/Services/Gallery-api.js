@@ -11,7 +11,7 @@ const fetchImages = (query, page) => {
       return response.json();
     }
     return Promise.reject(
-      new Error(`Oops... there are no ${query} images matching your search... `)
+      new Error(`Oops... there are no images matching your search... `)
     );
   });
 };

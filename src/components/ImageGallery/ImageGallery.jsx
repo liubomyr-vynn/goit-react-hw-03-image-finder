@@ -2,19 +2,17 @@ import React, { Component } from 'react';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Button from '../Button/Button';
 import imagesApi from '../../Services/Gallery-api';
+import Loader from '../Loader/Loader';
 import { nanoid } from 'nanoid';
 
 class ImageGallery extends Component {
+  galleryRef = React.createRef();
+
   state = {
     searchQuery: '',
     currentPage: 1,
     images: [],
-  };
-
-  handleLoadMore = () => {
-    this.setState(prevState => ({
-      currentPage: prevState.currentPage + 1,
-    }));
+    loading: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -24,11 +22,7 @@ class ImageGallery extends Component {
     const nextStatePage = this.state.currentPage;
 
     if (prevInput !== nextInput) {
-      this.setState({
-        searchQuery: '',
-        images: [],
-        currentPage: 1,
-      });
+      this.setState({ loading: true });
 
       imagesApi
         .fetchImages(nextInput, 1)
@@ -39,8 +33,14 @@ class ImageGallery extends Component {
             images: newImages,
           });
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.setState({ loading: false });
+          this.scrollToGallery();
+        });
     } else if (prevStatePage !== nextStatePage) {
+      this.setState({ loading: true });
+
       imagesApi
         .fetchImages(nextInput, nextStatePage)
         .then(data => {
@@ -50,24 +50,44 @@ class ImageGallery extends Component {
             images: [...prevState.images, ...newImages],
           }));
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.setState({ loading: false });
+          this.scrollToGallery();
+        });
     }
   }
 
+  handleLoadMore = () => {
+    this.setState(prevState => ({
+      currentPage: prevState.currentPage + 1,
+    }));
+  };
+
+  scrollToGallery = () => {
+    this.galleryRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
+
   render() {
-    const { searchQuery, images } = this.state;
+    const { searchQuery, images, loading } = this.state;
     return (
       <div>
-        <ul className="ImageGallery">
-          {searchQuery !== '' &&
-            images.map(image => (
-              <ImageGalleryItem
-                key={nanoid()}
-                largeImage={image.largeImageURL}
-                webformat={image.webformatURL}
-              />
-            ))}
-        </ul>
+        <div ref={this.galleryRef}>
+          <ul className="ImageGallery">
+            {searchQuery !== '' &&
+              images.map(image => (
+                <ImageGalleryItem
+                  key={nanoid()}
+                  largeImage={image.largeImageURL}
+                  webformat={image.webformatURL}
+                />
+              ))}
+          </ul>
+        </div>
+        {loading && <Loader />}
         {searchQuery !== '' && <Button onChange={this.handleLoadMore} />}
       </div>
     );

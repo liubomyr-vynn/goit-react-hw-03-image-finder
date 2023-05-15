@@ -6,8 +6,6 @@ import Loader from '../Loader/Loader';
 import { nanoid } from 'nanoid';
 
 class ImageGallery extends Component {
-  galleryRef = React.createRef();
-
   state = {
     searchQuery: '',
     currentPage: 1,
@@ -34,10 +32,7 @@ class ImageGallery extends Component {
           });
         })
         .catch(error => console.log(error))
-        .finally(() => {
-          this.setState({ loading: false });
-          this.scrollToGallery();
-        });
+        .finally(this.setState({ loading: false }));
     } else if (prevStatePage !== nextStatePage) {
       this.setState({ loading: true });
 
@@ -51,10 +46,7 @@ class ImageGallery extends Component {
           }));
         })
         .catch(error => console.log(error))
-        .finally(() => {
-          this.setState({ loading: false });
-          this.scrollToGallery();
-        });
+        .finally(this.setState({ loading: false }));
     }
   }
 
@@ -64,29 +56,20 @@ class ImageGallery extends Component {
     }));
   };
 
-  scrollToGallery = () => {
-    this.galleryRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
   render() {
     const { searchQuery, images, loading } = this.state;
     return (
       <div>
-        <div ref={this.galleryRef}>
-          <ul className="ImageGallery">
-            {searchQuery !== '' &&
-              images.map(image => (
-                <ImageGalleryItem
-                  key={nanoid()}
-                  largeImage={image.largeImageURL}
-                  webformat={image.webformatURL}
-                />
-              ))}
-          </ul>
-        </div>
+        <ul className="ImageGallery">
+          {searchQuery !== '' &&
+            images.map(image => (
+              <ImageGalleryItem
+                key={nanoid()}
+                largeImage={image.largeImageURL}
+                webformat={image.webformatURL}
+              />
+            ))}
+        </ul>
         {loading && <Loader />}
         {searchQuery !== '' && <Button onChange={this.handleLoadMore} />}
       </div>

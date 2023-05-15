@@ -3,6 +3,8 @@
 @import './components/ImageGallery/ImageGallery.module.css';
 @import './components/ImageGalleryItem/ImageGalleryItem.module.css';
 @import './components/Button/Button.module.css';
+@import './components/Loader/Loader.module.css';
+@import './components/Modal/Modal.module.css';
 
 html {
   box-sizing: border-box;
@@ -70,7 +72,6 @@ img {
   padding-right: 15px;
   margin-right: auto;
   margin-left: auto;
-  /* margin-top: 40px; */
   margin-bottom: 40px;
   justify-content: center;
 }

@@ -3,6 +3,7 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Button from '../Button/Button';
 import imagesApi from '../../Services/Gallery-api';
 import Loader from '../Loader/Loader';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 import { nanoid } from 'nanoid';
 
 class ImageGallery extends Component {
@@ -26,13 +27,20 @@ class ImageGallery extends Component {
         .fetchImages(nextInput, 1)
         .then(data => {
           const newImages = data.hits;
+          if (newImages.length === 0) {
+            throw new Error('No photos found for this query');
+          }
           this.setState({
             searchQuery: data,
             images: newImages,
           });
         })
-        .catch(error => console.log(error))
-        .finally(this.setState({ loading: false }));
+        .catch(error =>
+          Report.info('No photos found for this query!', '', 'Ok')
+        )
+        .finally(() => {
+          this.setState({ loading: false });
+        });
     } else if (prevStatePage !== nextStatePage) {
       this.setState({ loading: true });
 
@@ -45,8 +53,12 @@ class ImageGallery extends Component {
             images: [...prevState.images, ...newImages],
           }));
         })
-        .catch(error => console.log(error))
-        .finally(this.setState({ loading: false }));
+        .catch(error =>
+          Report.info('No photos found for this query!', '', 'Ok')
+        )
+        .finally(() => {
+          this.setState({ loading: false });
+        });
     }
   }
 
@@ -58,6 +70,7 @@ class ImageGallery extends Component {
 
   render() {
     const { searchQuery, images, loading } = this.state;
+
     return (
       <div>
         <ul className="ImageGallery">
@@ -71,7 +84,12 @@ class ImageGallery extends Component {
             ))}
         </ul>
         {loading && <Loader />}
-        {searchQuery !== '' && <Button onChange={this.handleLoadMore} />}
+        {searchQuery !== '' && images.length > 0 && (
+          <Button onChange={this.handleLoadMore} />
+        )}
+        {searchQuery !== '' && images.length === 0 && (
+          <p>No photos found for this query</p>
+        )}
       </div>
     );
   }

@@ -35,9 +35,10 @@ class ImageGallery extends Component {
             images: newImages,
           });
         })
-        .catch(error =>
-          Report.info('No photos found for this query!', '', 'Ok')
-        )
+        .catch(error => {
+          Report.info('No photos found for this query!', '', 'Ok');
+          console.log(error);
+        })
         .finally(() => {
           this.setState({ loading: false });
         });
@@ -53,9 +54,10 @@ class ImageGallery extends Component {
             images: [...prevState.images, ...newImages],
           }));
         })
-        .catch(error =>
-          Report.info('No photos found for this query!', '', 'Ok')
-        )
+        .catch(error => {
+          Report.info('No photos found for this query!', '', 'Ok');
+          console.log(error);
+        })
         .finally(() => {
           this.setState({ loading: false });
         });

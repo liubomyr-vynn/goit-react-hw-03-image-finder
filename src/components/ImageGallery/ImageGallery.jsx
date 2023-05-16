@@ -12,6 +12,7 @@ class ImageGallery extends Component {
     currentPage: 1,
     images: [],
     loading: false,
+    totalHits: 0,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -31,8 +32,10 @@ class ImageGallery extends Component {
             throw new Error('No photos found for this query');
           }
           this.setState({
-            searchQuery: data,
+            searchQuery: nextInput,
+            currentPage: 1,
             images: newImages,
+            totalHits: data.totalHits,
           });
         })
         .catch(error => {
@@ -50,7 +53,6 @@ class ImageGallery extends Component {
         .then(data => {
           const newImages = data.hits;
           this.setState(prevState => ({
-            searchQuery: data,
             images: [...prevState.images, ...newImages],
           }));
         })
@@ -71,7 +73,8 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { searchQuery, images, loading } = this.state;
+    const { searchQuery, images, loading, totalHits } = this.state;
+    const shouldRenderLoadMore = images.length < totalHits;
 
     return (
       <div>
@@ -86,9 +89,7 @@ class ImageGallery extends Component {
             ))}
         </ul>
         {loading && <Loader />}
-        {searchQuery !== '' && images.length > 0 && (
-          <Button onChange={this.handleLoadMore} />
-        )}
+        {shouldRenderLoadMore && <Button onChange={this.handleLoadMore} />}
       </div>
     );
   }
